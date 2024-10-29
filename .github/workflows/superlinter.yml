@@ -1,6 +1,12 @@
 name: Super-linter
 
 on: push 
+   workflow_dispatch:
+     inputs:
+       keyword:
+         description: "Enter a keyword to trigger a specific job"
+         required: true
+         default: "run-tests"
 
 jobs:
 #First job: Lint code base 
@@ -13,6 +19,21 @@ jobs:
 
       - name: Run Super-Linter 
         uses: github/super-linter@v4 
+ #Second job: keyword checker 
+    keyword-check:
+       runs-on: ubuntu-latest
+
+       steps:
+         - name: Check Keyword
+           run: echo "Keyword entered: ${{ github.event.inputs.keyword }}"
+ #Third job: runs tests 
+    test: 
+       runs-on: ubuntu-latest 
+          #needs: lint 
+       if: 
+         ${{ github.event.inputs.keyword == 'run-tests' }}
+       steps:
+         - name: 
 
         env:
           DEFAULT_BRANCH: main
